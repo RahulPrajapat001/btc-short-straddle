@@ -1,0 +1,29 @@
+# Strategy settings. The API keys do NOT go here - they go in the .env file.
+
+[bybit]
+# Instrument used as the "BTC reference price" for picking the ATM strike.
+reference_instrument = "BTCUSDT-LINEAR.BYBIT"
+
+[strategy]
+base_currency = "BTC"
+settle_coin = "USDC"             # "USDC" (classic Bybit options) or "USDT"
+expiry = ""                      # e.g. "27MAR26". Empty = nearest available expiry
+min_time_to_expiry_hours = 1.0   # skip options expiring within this many hours
+
+quantity = 0.01                  # contracts per leg (Bybit BTC option minimum is 0.01)
+use_market_orders = false        # false = limit orders at best bid/ask (safer on thin books)
+entry_slippage_pct = 0.0         # sell limit = bid * (1 - x%)
+exit_slippage_pct = 0.0          # buy limit  = ask * (1 + x%)
+max_entry_spread_pct = 0.0       # 0 = off. e.g. 0.5 -> only enter when combined bid/ask spread <= 0.5%
+                                 # (see README: "Spread vs 1% stop-loss")
+entry_timeout_secs = 60         # cancel unfilled entry orders after this many seconds
+order_reprice_secs = 15          # cancel + re-send a buy-back at the new ask after this
+max_buyback_attempts = 20        # per leg, then stop and ask for manual action
+
+status_interval_secs = 10        # how often the [STATUS] line is printed
+close_positions_on_stop = false  # Level 1 rule: no automated exits
+
+[risk]
+# Only used with --level 2
+stop_loss_pct = 1.0              # exit when buyback cost rises 1% above entry premium
+take_profit_pct = 2.0            # exit when buyback cost falls 2% below entry premium
